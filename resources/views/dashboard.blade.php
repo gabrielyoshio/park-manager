@@ -80,7 +80,14 @@
                                 <td class="py-3 font-semibold text-gray-800">Vaga {{ $reg->vaga->numero }}</td>
                                 <td class="py-3 text-gray-700">{{ $reg->placa }}</td>
                                 <td class="py-3 text-gray-500">{{ $reg->entrada->format('H:i') }}</td>
-                                <td class="py-3 text-gray-500">{{ $reg->entrada->diffForHumans(null, true) }}</td>
+                                <td class="py-3 text-gray-500">
+                                    @php
+                                        $minutos = $reg->entrada->diffInMinutes(now());
+                                        $horas = floor($minutos / 60);
+                                        $mins = $minutos % 60;
+                                        echo $horas > 0 ? "{$horas}h {$mins}min" : "{$mins} minutos";
+                                    @endphp
+                                </td>
                                 <td class="py-3">
                                     <form action="{{ route('saida', $reg) }}" method="POST">
                                         @csrf

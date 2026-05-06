@@ -95,5 +95,40 @@ public function reservar(Request $request) {
 
     return back()->with('success', 'Vaga ' . $vaga->numero . ' reservada com sucesso! Placa: ' . strtoupper($request->placa));
 }
+// API - retorna vagas em JSON
+public function vagasApi() {
+    $vagas = Vaga::with('registroAtivo')->orderBy('numero')->get();
+    return response()->json($vagas);
+}
+
+// API - reservar vaga pelo app mobile
+public function reservarApi(Request $request) {
+    $request->validate([
+        'vaga_id' => 'required|exists:vagas,id',
+        'placa'   => 'required|string|max:10',
+    ]);
+
+    $vaga = Vaga::findOrFail($request->vaga_id);
+
+    if ($vaga->status === 'ocupada') {
+        return response()->json(['error' => 'Vaga já ocupada!'], 400);
+    }
+
+    Registro::create([
+        'vaga_id' => $vaga->id,
+        'placa'   => strtoupper($request->placa),
+        'entrada' => now(),
+    ]);
+
+    $vaga->update(['status' => 'ocupada']);
+
+    return response()->json(['success' => 'Vaga reservada com sucesso!']);
+}
+
+// Limpar histórico
+public function limparHistorico() {
+    Registro::whereNotNull('saida')->delete();
+    return back()->with('success', 'Histórico limpo com sucesso!');
+}
 
 }
