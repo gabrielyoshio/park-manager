@@ -88,8 +88,10 @@
 
                 <div class="mb-6">
                     <label class="block text-sm text-gray-400 mb-1">Placa do veículo</label>
-                    <input type="text" name="placa" required placeholder="ABC-1234" maxlength="10"
+                    <input type="text" name="placa" required placeholder="ABC-1234" maxlength="8"
+                        oninput="formatarPlaca(this)"
                         class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white uppercase focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-xs text-gray-500 mt-1">Formato: ABC-1234 ou ABC-1A23</p>
                 </div>
 
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition mb-3">
@@ -114,6 +116,14 @@
 
         function fecharModal() {
             document.getElementById('modal').classList.add('hidden');
+        }
+
+        function formatarPlaca(input) {
+            let valor = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (valor.length > 3) {
+                valor = valor.substring(0, 3) + '-' + valor.substring(3, 7);
+            }
+            input.value = valor;
         }
     </script>
 

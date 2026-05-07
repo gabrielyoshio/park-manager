@@ -30,7 +30,9 @@ class EstacionamentoController extends Controller
     public function entrada(Request $request) {
         $request->validate([
             'vaga_id' => 'required|exists:vagas,id',
-            'placa'   => 'required|string|max:10',
+            'placa'   => ['required', 'string', 'regex:/^[A-Za-z]{3}-?[0-9][A-Za-z0-9][0-9]{2}$/'],
+        ], [
+            'placa.regex' => 'Placa inválida! Use o formato ABC-1234 ou ABC-1A23.',
         ]);
 
         $vaga = Vaga::findOrFail($request->vaga_id);
@@ -77,8 +79,10 @@ class EstacionamentoController extends Controller
     public function reservar(Request $request) {
         $request->validate([
             'vaga_id' => 'required|exists:vagas,id',
-            'placa'   => 'required|string|max:10',
+            'placa'   => ['required', 'string', 'regex:/^[A-Za-z]{3}-?[0-9][A-Za-z0-9][0-9]{2}$/'],
             'nome'    => 'required|string|max:100',
+        ], [
+            'placa.regex' => 'Placa inválida! Use o formato ABC-1234 ou ABC-1A23.',
         ]);
 
         $vaga = Vaga::findOrFail($request->vaga_id);
@@ -109,7 +113,7 @@ class EstacionamentoController extends Controller
     public function reservarApi(Request $request) {
         $request->validate([
             'vaga_id' => 'required|exists:vagas,id',
-            'placa'   => 'required|string|max:10',
+            'placa'   => ['required', 'string', 'regex:/^[A-Za-z]{3}-?[0-9][A-Za-z0-9][0-9]{2}$/'],
             'nome'    => 'required|string|max:100',
         ]);
 
